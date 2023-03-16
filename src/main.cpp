@@ -14,9 +14,9 @@
 AsyncWebServer server(80);
 
 // const uint8_t LED_BUILTIN_OWN = LED_BUILTIN;
-#include "UMS3.h"
+#include "TinyPICO.h"
 
-UMS3 ums3;
+TinyPICO tinypico = TinyPICO();
 
 // EEPROM-Adressen
 const uint8_t eepromAdr = 0x00;
@@ -34,6 +34,11 @@ enum blinkStatus
   blinkNo        // mit WiFi verbunden
 };
 blinkStatus blink;
+
+const uint8_t veryBright = 0xFF;
+const uint8_t bright = veryBright / 2;
+const uint8_t smallBright = bright / 2;
+const uint8_t dark = 0x00;
 
 uint8_t setup_todo;
 
@@ -146,10 +151,10 @@ void timer1s()
   }
   if (secs % 2 == 0)
     // turn the LED on by making the voltage HIGH
-    ums3.setPixelColor(0x00f000); // red
+    tinypico.DotStar_SetPixelColor(0x00f000); // red
   else
     // turn the LED off by making the voltage LOW
-    ums3.setPixelColor(0xf00000); // green
+    tinypico.DotStar_SetPixelColor(0xf00000); // green
 }
 
 void eraseEEPROM()
@@ -169,11 +174,10 @@ void setup()
   Serial.begin(115200);
   Serial.setDebugOutput(false);
   // Initialize all board peripherals, call this first
-  ums3.begin();
   // Brightness is 0-255. We set it to 1/3 brightness here
-  ums3.setPixelBrightness(bright);
+  tinypico.DotStar_SetBrightness(bright);
   Serial.println("\r\n\rS t a r t   OTA");
-  Serial.println("Variante TINYS3");
+  Serial.println("Variante TINYPICO");
 
   Serial.println("\r\nZeigt die eigene IP-Adresse");
   Serial.println("und bereitet OTA vor\r\n");
